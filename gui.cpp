@@ -162,7 +162,8 @@ static emacs_value Fgl_helper_ui_text(emacs_env* env, ptrdiff_t nargs,
                                       void* data) EMACS_NOEXCEPT
 {
     char* text = copy_string_contents(env, args[0], NULL);
-    ImGui::Text(text);
+    // ImGui::Text(text);
+    ImGui::Text("justtesting");
     free(text);
     return Qnil;
 }

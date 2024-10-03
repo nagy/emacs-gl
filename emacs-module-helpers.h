@@ -1,13 +1,7 @@
-/* From https://github.com/jkitchin/emacs-modules */
-#include "emacs-module.h"
+#include <emacs-module.h>
 
 #ifndef EMACS_MODULE_HELPERS_H_
 #define EMACS_MODULE_HELPERS_H_
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 //  from dbg.h in Learn C the Hard Way
 #include <errno.h>
@@ -51,16 +45,8 @@ extern "C"
 
 #define check_mem(A) check((A), "Out of memory")
 
-#define check_debug(A, M, ...)   \
-    if (!(A)) {                  \
-        debug(M, ##__VA_ARGS__); \
-        errno = 0;               \
-        goto error;              \
-    }
-
-    /* Emacs symbols. */
-    extern emacs_value Qt;
-    extern emacs_value Qnil;
+#define check_debug(A, M, ...) if(!(A)) {debug(M, ##__VA_ARGS__); \
+    errno=0; goto error;}
 
     void defconsti(emacs_env* env, const char* name, int value,
                    const char* doc);
@@ -69,9 +55,8 @@ extern "C"
     void defconst(emacs_env* env, const char* name, double value,
                   const char* doc);
 
-    double extract_double(emacs_env* env, emacs_value arg);
-    int extract_integer(emacs_env* env, emacs_value arg);
-    char* copy_string_contents(emacs_env* env, emacs_value arg, size_t* len);
+    double extract_double(emacs_env *env, emacs_value arg);
+    int extract_integer(emacs_env *env, emacs_value arg);
 
     emacs_value intern(emacs_env* env, const char* feature);
 
@@ -82,11 +67,8 @@ extern "C"
     bind_function(env, lsym,                     \
                   env->make_function(env, amin, amax, csym, doc, data))
 
-    void provide(emacs_env* env, const char* feature);
-    void require(emacs_env* env, const char* feature);
 
-#ifdef __cplusplus
-}
-#endif
+void provide (emacs_env *env, const char *feature);
+void require (emacs_env *env, const char *feature);
 
 #endif // EMACS_MODULE_HELPERS_H_

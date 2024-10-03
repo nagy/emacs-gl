@@ -3,8 +3,10 @@
 #include <glad/glad.h>
 #include <stdlib.h>
 
+extern emacs_value Qt, Qnil;
+
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb.h>
+#include <stb_include.h>
 #include <stb_image.h>
 
 struct texture_data {

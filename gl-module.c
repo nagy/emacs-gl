@@ -1,15 +1,17 @@
+#include <emacs-module.h>
 #include "emacs-module-helpers.h"
-#include "emacs-module.h"
 #include <glad/glad.h>
 
 int plugin_is_GPL_compatible;
 
+static emacs_value Qt, Qnil;
+
 extern void glenums_init(emacs_env* env);
 extern void glfuncs_init(emacs_env* env);
-extern void glm_init(emacs_env* env);
+/* extern void glm_init(emacs_env* env); */
 
-extern void gl_helper_texture_init(emacs_env* env);
-extern void gl_helper_gui_init(emacs_env* env);
+/* extern void gl_helper_texture_init(emacs_env* env); */
+/* extern void gl_helper_gui_init(emacs_env* env); */
 
 int emacs_module_init(struct emacs_runtime* ert)
 {
@@ -20,10 +22,10 @@ int emacs_module_init(struct emacs_runtime* ert)
 
     glenums_init(env);
     glfuncs_init(env);
-    glm_init(env);
+    /* glm_init(env); */
 
-    gl_helper_texture_init(env);
-    gl_helper_gui_init(env);
+    /* gl_helper_texture_init(env); */
+    /* gl_helper_gui_init(env); */
 
     provide(env, "gl-module");
     return 0;

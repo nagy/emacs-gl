@@ -1,7 +1,9 @@
+#include <emacs-module.h>
 #include "emacs-module-helpers.h"
-#include "emacs-module.h"
 #include <glad/glad.h>
 #include <stdlib.h>
+
+extern emacs_value Qt, Qnil;
 
 #include "inc/glfuncs_1_0.inc"
 #include "inc/glfuncs_1_1.inc"
@@ -33,9 +35,9 @@ emacs_value Fgl_shader_source(emacs_env* env, ptrdiff_t nargs,
 
     const GLchar** sources = calloc(count, sizeof(GLchar*));
 
-    for (i = 0; i < count; i++)
-        sources[i] =
-            copy_string_contents(env, env->vec_get(env, args[2], i), NULL);
+    /* for (i = 0; i < count; i++) */
+    /*     sources[i] = */
+    /*         env->copy_string_contents(env, env->vec_get(env, args[2], i), NULL); */
 
     glShaderSource(shader, count, sources, NULL);
 
