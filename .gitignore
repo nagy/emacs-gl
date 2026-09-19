@@ -1,7 +1,10 @@
-.ccls-cache
+.ccls-cache/
 
-build
+build/
+.venv-glad/
+
 *.so
+*.o
 
 inc/*.inc
 

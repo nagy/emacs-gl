@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb.h>
 #include <stb_image.h>
 
 struct texture_data {

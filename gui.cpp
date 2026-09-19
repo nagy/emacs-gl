@@ -38,9 +38,6 @@ static emacs_value Fgl_helper_ui_init(emacs_env* env, ptrdiff_t nargs,
 
     ImGui_ImplOpenGL3_Init("#version 150");
 
-    for (int i = 0; i < IM_ARRAYSIZE(io.KeyMap); i++)
-        io.KeyMap[i] = i;
-
     return Qnil;
 }
 
@@ -69,7 +66,7 @@ static emacs_value Fgl_helper_ui_render(emacs_env* env, ptrdiff_t nargs,
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    memset(io.KeysDown, 0, sizeof(io.KeysDown));
+    io.ClearInputKeys();
 
     return Qnil;
 }
@@ -83,8 +80,7 @@ static emacs_value Fgl_helper_ui_cursor_pos_callback(emacs_env* env,
     double x = extract_double(env, args[0]);
     double y = extract_double(env, args[1]);
 
-    io.MousePos.x = x;
-    io.MousePos.y = y;
+    io.AddMousePosEvent((float)x, (float)y);
 
     return Qnil;
 }
@@ -98,7 +94,8 @@ Fgl_helper_ui_mouse_button_callback(emacs_env* env, ptrdiff_t nargs,
     int button = extract_integer(env, args[0]);
     emacs_value action = args[1];
 
-    if (button > 0) io.MouseDown[button - 1] = env->eq(env, action, Qpress);
+    if (button > 0)
+        io.AddMouseButtonEvent(button - 1, env->eq(env, action, Qpress));
 
     return Qnil;
 }
@@ -114,27 +111,27 @@ static emacs_value Fgl_helper_ui_send_key(emacs_env* env, ptrdiff_t nargs,
     if (!strcmp(str, "SPC")) {
         key = ' ';
     } else if (!strcmp(str, "<backspace>")) {
-        io.KeysDown[ImGuiKey_Backspace] = true;
+        io.AddKeyEvent(ImGuiKey_Backspace, true);
     } else if (!strcmp(str, "<tab>")) {
-        io.KeysDown[ImGuiKey_Tab] = true;
+        io.AddKeyEvent(ImGuiKey_Tab, true);
     } else if (!strcmp(str, "<return>")) {
-        io.KeysDown[ImGuiKey_Enter] = true;
+        io.AddKeyEvent(ImGuiKey_Enter, true);
     } else if (!strcmp(str, "<left>")) {
-        io.KeysDown[ImGuiKey_LeftArrow] = true;
+        io.AddKeyEvent(ImGuiKey_LeftArrow, true);
     } else if (!strcmp(str, "<right>")) {
-        io.KeysDown[ImGuiKey_RightArrow] = true;
+        io.AddKeyEvent(ImGuiKey_RightArrow, true);
     } else if (!strcmp(str, "<up>")) {
-        io.KeysDown[ImGuiKey_UpArrow] = true;
+        io.AddKeyEvent(ImGuiKey_UpArrow, true);
     } else if (!strcmp(str, "<down>")) {
-        io.KeysDown[ImGuiKey_DownArrow] = true;
+        io.AddKeyEvent(ImGuiKey_DownArrow, true);
     } else if (!strcmp(str, "<delete>")) {
-        io.KeysDown[ImGuiKey_Delete] = true;
+        io.AddKeyEvent(ImGuiKey_Delete, true);
     } else if (!strcmp(str, "<home>")) {
-        io.KeysDown[ImGuiKey_Home] = true;
+        io.AddKeyEvent(ImGuiKey_Home, true);
     } else if (!strcmp(str, "<end>")) {
-        io.KeysDown[ImGuiKey_End] = true;
+        io.AddKeyEvent(ImGuiKey_End, true);
     } else if (!strcmp(str, "<escape>")) {
-        io.KeysDown[ImGuiKey_Escape] = true;
+        io.AddKeyEvent(ImGuiKey_Escape, true);
     } else {
         key = *str;
     }
@@ -162,7 +159,7 @@ static emacs_value Fgl_helper_ui_text(emacs_env* env, ptrdiff_t nargs,
                                       void* data) EMACS_NOEXCEPT
 {
     char* text = copy_string_contents(env, args[0], NULL);
-    ImGui::Text(text);
+    ImGui::TextUnformatted(text);
     free(text);
     return Qnil;
 }

@@ -13,34 +13,37 @@ OpenGL bindings for Emacs Lisp. It enables drawing to Emacs buffers with OpenGL 
 ** Installation
 *** Requirements
 1. GNU Emacs with the GLArea xwidget feature and module support.
-You can build the feature from the ~feature/glarea~ branch of this [[https://github.com/Jimx-/emacs][repo]] using the following commands:
+You can build the feature from one of the ~feature/glarea-base-*~ branches of this [[https://github.com/nagy/emacs-glarea][repo]] using the following commands:
 #+BEGIN_SRC shell
-git clone -b feature/glarea https://github.com/Jimx-/emacs.git
-cd emacs
+git clone -b feature/glarea-base-emacs-master https://github.com/nagy/emacs-glarea.git
+cd emacs-glarea
 ./autogen.sh
-./configure --with-xwidgets --with-x-toolkit=gtk --with-modules 
+./configure --with-xwidgets --with-x-toolkit=gtk --with-modules
 make
 #+END_SRC
 
-2. CMake (>= 3.11)
-3. [[https://conan.io/][Conan]]
-4. Python 3.8
+2. CMake (>= 3.16)
+3. Python 3
+4. The C dependencies: ~imgui~ (>= 1.91), ~glm~, ~stb~, OpenGL/GLX.
+
+With [[https://nixos.org/][Nix]] you get all of them from the included flake:
+#+BEGIN_SRC shell
+nix develop
+#+END_SRC
 
 *** Building the module
 To build the module itself, first clone this repo:
 #+BEGIN_SRC shell
-git clone https://github.com/Jimx-/emacs-gl.git
+git clone https://github.com/nagy/emacs-gl.git
 cd emacs-gl
 #+END_SRC
 
 Build the module with:
 #+BEGIN_SRC shell
-python generate.py
-mkdir build
-cd build
-conan install ..
-cmake ..
-make
+python generate.py              # generate gl-decl.el and inc/*.inc
+./gen-glad.sh build/glad       # generate the glad OpenGL loader
+cmake -S . -B build
+cmake --build build
 #+END_SRC
 After that, you should see a ~gl-module.so~ under the root directory of the repo. To load the module:
 #+BEGIN_SRC emacs-lisp
